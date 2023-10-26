@@ -5,91 +5,110 @@ import sounddevice as sd
 
 ### Exercitiul 1
 
-amplitudine = 1.5
-frecventa = 5
-faza = np.pi/4
+# amplitudine = 1.5
+# frecventa = 5
+# faza = np.pi/4
+#
+# timp = np.linspace(0, 1, 500)
+# semnal_sinus = amplitudine * np.sin(2 * np.pi * frecventa * timp + faza)
+# semnal_cosinus = amplitudine * np.cos(2 * np.pi * frecventa * timp + faza)
+#
+# plt.figure(figsize=(10, 6))
+# plt.subplot(2, 1, 1)
+# plt.plot(timp, semnal_sinus)
+# plt.title('Semnal sinusoidal')
+#
+# plt.subplot(2, 1, 2)
+# plt.plot(timp, semnal_cosinus)
+# plt.title('Semnal cosinusoidal')
+#
+# plt.show()
+#
+#
+# ### Exercitiul 2
+#
+# amplitudine = 1
+# frecventa = 5
+# faze = [0, np.pi/4, np.pi/2, 3*np.pi/4]
+#
+# timp = np.linspace(0, 1, 500)
+#
+# semnale = []
+# for faza in faze:
+#     semnal = amplitudine * np.sin(2 * np.pi * frecventa * timp + faza)
+#     semnale.append(semnal)
+#
+# plt.figure(figsize=(10, 6))
+# for i, semnal in enumerate(semnale):
+#     plt.plot(timp, semnal)
+#
+# n = np.random.normal(0, 1, 500)
+# valori_snr = [0.1, 1, 10, 100]
+# for snr in valori_snr:
+#     zgomot = np.random.normal(0, 1 / snr, 500)
+#     semnal_zgomot = semnal + zgomot
+#     plt.plot(timp, semnal_zgomot)
+#
+# plt.title('Semnale sinusoidale')
+# plt.show()
+#
+#
+# ### Exercitiul 4
+# frecv_esant = 44100
+#
+# timp = np.linspace(0, 1, frecv_esant)
+#
+# amp = 2
+# frecv = 5
+# phi = np.pi/4
+# semnal_sinus = amp * np.sin(2 * np.pi * frecv * timp + phi)
+#
+# semnal_sawtooth = np.linspace(-amp, amp, frecv_esant)
+#
+# suma_semnale = semnal_sinus + semnal_sawtooth
+# plt.figure(figsize=(12, 6))
+#
+# plt.subplot(3, 1, 1)
+# plt.plot(timp, semnal_sinus)
+# plt.title('Semnal Sinusoidal')
+# plt.xlabel('Timp')
+# plt.ylabel('Amplitudine')
+#
+# plt.subplot(3, 1, 2)
+# plt.plot(timp, semnal_sawtooth)
+# plt.title('Semnal Sawtooth')
+# plt.xlabel('Timp')
+# plt.ylabel('Amplitudine')
+#
+# plt.subplot(3, 1, 3)
+# plt.plot(timp, suma_semnale)
+# plt.title('Suma semnalelor')
+# plt.xlabel('Timp')
+# plt.ylabel('Amplitudine')
+#
+# plt.tight_layout()
+# plt.show()
+#
+# wavfile.write('semnal_combinat.wav', frecv_esant, suma_semnale)
+#
+# sd.play(suma_semnale, frecv_esant)
+# sd.wait()
 
-timp = np.linspace(0, 1, 500)
-semnal_sinus = amplitudine * np.sin(2 * np.pi * frecventa * timp + faza)
-semnal_cosinus = amplitudine * np.cos(2 * np.pi * frecventa * timp + faza)
 
-plt.figure(figsize=(10, 6))
-plt.subplot(2, 1, 1)
-plt.plot(timp, semnal_sinus)
-plt.title('Semnal sinusoidal')
+### Exercitiul 5
 
-plt.subplot(2, 1, 2)
-plt.plot(timp, semnal_cosinus)
-plt.title('Semnal cosinusoidal')
+frecventa_esantionare = 44100
+timp = np.linspace(0, 1, frecventa_esantionare)
 
-plt.show()
+A = 1.0 # Amplitudine
+f1 = 5  # Prima frecventa
+semnal_sinusoidal_1 = A * np.sin(2 * np.pi * f1 * timp)
 
+f2 = 3  # A doua frecventa
+semnal_sinusoidal_2 = A * np.sin(2 * np.pi * f2 * timp)
 
-### Exercitiul 2
-
-amplitudine = 1
-frecventa = 5
-faze = [0, np.pi/4, np.pi/2, 3*np.pi/4]
-
-timp = np.linspace(0, 1, 500)
-
-semnale = []
-for faza in faze:
-    semnal = amplitudine * np.sin(2 * np.pi * frecventa * timp + faza)
-    semnale.append(semnal)
-
-plt.figure(figsize=(10, 6))
-for i, semnal in enumerate(semnale):
-    plt.plot(timp, semnal)
-
-n = np.random.normal(0, 1, 500)
-valori_snr = [0.1, 1, 10, 100]
-for snr in valori_snr:
-    zgomot = np.random.normal(0, 1 / snr, 500)
-    semnal_zgomot = semnal + zgomot
-    plt.plot(timp, semnal_zgomot)
-
-plt.title('Semnale sinusoidale')
-plt.show()
-
-
-### Exercitiul 4
-frecv_esant = 44100
-
-timp = np.linspace(0, 1, frecv_esant)
-
-amp = 2
-frecv = 5
-phi = np.pi/4
-semnal_sinus = amp * np.sin(2 * np.pi * frecv * timp + phi)
-
-semnal_sawtooth = np.linspace(-amp, amp, frecv_esant)
-
-suma_semnale = semnal_sinus + semnal_sawtooth
-plt.figure(figsize=(12, 6))
-
-plt.subplot(3, 1, 1)
-plt.plot(timp, semnal_sinus)
-plt.title('Semnal Sinusoidal')
-plt.xlabel('Timp')
-plt.ylabel('Amplitudine')
-
-plt.subplot(3, 1, 2)
-plt.plot(timp, semnal_sawtooth)
-plt.title('Semnal Sawtooth')
-plt.xlabel('Timp')
-plt.ylabel('Amplitudine')
-
-plt.subplot(3, 1, 3)
-plt.plot(timp, suma_semnale)
-plt.title('Suma semnalelor')
-plt.xlabel('Timp')
-plt.ylabel('Amplitudine')
-
-plt.tight_layout()
-plt.show()
-
-wavfile.write('semnal_combinat.wav', frecv_esant, suma_semnale)
-
-sd.play(suma_semnale, frecv_esant)
+semnal_combinat = np.concatenate((semnal_sinusoidal_1, semnal_sinusoidal_2))
+sd.play(semnal_combinat, frecventa_esantionare)
 sd.wait()
+
+# Se observa o tranzitie de la o frecventa la cealalta
