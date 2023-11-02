@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#EXERCITIUL 1
+
 N = 8
 F = np.zeros((N, N), dtype=np.complex128)
 for n in range(N):
