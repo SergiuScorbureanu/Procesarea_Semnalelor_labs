@@ -1,76 +1,102 @@
 from scipy import misc, ndimage
+from scipy import misc, fftpack
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.fft import ifft, fft, fftshift, fft2, ifft2, ifftshift
 
-# Definirea funcțiilor
-def func1(n1, n2):
-    return np.sin(2 * np.pi * n1 + 3 * np.pi * n2)
+### Exercitiul 1
+# Creez 2 matrice n1, n2 care contin coord punctelor unui grid
+N = 64
+n1, n2 = np.meshgrid(np.arange(N), np.arange(N))
 
-def func2(n1, n2):
-    return np.sin(4 * np.pi * n1) + np.cos(6 * np.pi * n2)
+x1 = np.sin(2 * np.pi * n1 + 3 * np.pi * n2)
+x2 = np.sin(4 * np.pi * n1) + np.cos(6 * np.pi * n2)
 
-def func3(m1, m2):
-    if (m1 == 0 and m2 == 5) or (m1 == 0 and m2 == -5):
-        return 1
-    else:
-        return 0
+# Declar o matrice goala cu dimensiunea NxN
+Y = np.zeros((N, N), dtype=complex)
 
-def func4(m1, m2):
-    if (m1 == 5 and m2 == 0) or (m1 == -5 and m2 == 0):
-        return 1
-    else:
-        return 0
+# Setez elementele impuse in cerinta pentru matricea Y
+Y[0, 5] = Y[0, N - 5] = 1
+Y[5, 0] = Y[N - 5, 0] = 1
+Y[5, 5] = Y[N - 5, N - 5] = 1
 
-def func5(m1, m2):
-    if (m1 == 5 and m2 == 5) or (m1 == -5 and m2 == -5):
-        return 1
-    else:
-        return 0
+y = ifft2(ifftshift(Y))
 
-# Definirea domeniului funcțiilor
-n1 = np.arange(-10, 11)
-n2 = np.arange(-10, 11)
+# Aplic tranformatele Fourier pt a obtine spectrul in domeniul frecventei pentru x1 si x2
+Y1 = fftshift(fft2(x1))
+Y2 = fftshift(fft2(x2))
 
-m1 = np.arange(-10, 11)
-m2 = np.arange(-10, 11)
+# Creez subragicele
+fig, axs = plt.subplots(2, 3, figsize=(12, 8))
 
-# Calcularea valorilor functiilor pentru fiecare pereche de indici
-xn1_n2_1 = func1(n1[:, np.newaxis], n2[np.newaxis, :])
-xn1_n2_2 = func2(n1[:, np.newaxis], n2[np.newaxis, :])
-Ym1_m2_3 = np.fromfunction(np.vectorize(func3), (21, 21), dtype=int)
-Ym1_m2_4 = np.fromfunction(np.vectorize(func4), (21, 21), dtype=int)
-Ym1_m2_5 = np.fromfunction(np.vectorize(func5), (21, 21), dtype=int)
+axs[0, 0].imshow(x1, cmap='viridis', extent=(0, N, 0, N))
+axs[0, 0].set_title('Poza x1(n1, n2)')
 
-# Afisarea imaginilor
-plt.figure(figsize=(15, 10))
+axs[0, 1].imshow(np.abs(Y1), cmap='viridis', extent=(0, N, 0, N))
+axs[0, 1].set_title('Spectru x1')
 
-plt.subplot(2, 3, 1)
-plt.imshow(xn1_n2_1, cmap='viridis', extent=(-10, 10, -10, 10))
-plt.title('Img: sin(2πn1 + 3πn2)')
+axs[0, 2].imshow(x2, cmap='viridis', extent=(0, N, 0, N))
+axs[0, 2].set_title('Poza x2(n1, n2)')
 
-plt.subplot(2, 3, 2)
-plt.imshow(xn1_n2_2, cmap='viridis', extent=(-10, 10, -10, 10))
-plt.title('Img: sin(4πn1) + cos(6πn2)')
+axs[1, 0].imshow(np.abs(Y2), cmap='viridis', extent=(0, N, 0, N))
+axs[1, 0].set_title('Spectru x2')
 
-plt.subplot(2, 3, 3)
-plt.imshow(Ym1_m2_3, cmap='viridis', extent=(-10, 10, -10, 10))
-plt.title('Y0,5 = Y0,-5 = 1, altfel 0')
+axs[1, 1].imshow(np.abs(y), cmap='viridis', extent=(0, N, 0, N))
+axs[1, 1].set_title('Poza y')
 
-plt.subplot(2, 3, 4)
-plt.imshow(Ym1_m2_4, cmap='viridis', extent=(-10, 10, -10, 10))
-plt.title('Y5,0 = Y-5,0 = 1, altfel 0')
+axs[1, 2].imshow(np.abs(Y), cmap='viridis', extent=(0, N, 0, N))
+axs[1, 2].set_title('Spectru Y')
 
-plt.subplot(2, 3, 5)
-plt.imshow(Ym1_m2_5, cmap='viridis', extent=(-10, 10, -10, 10))
-plt.title('Y5,5 = Y-5,-5 = 1, altfel 0')
-
-# Calcularea si afișarea spectrului
-plt.subplot(2, 3, 6)
-plt.specgram(xn1_n2_1, cmap='viridis', NFFT=256, Fs=1, noverlap=128)
-plt.title('Spectrul pentru sin(2πn1 + 3πn2)')
+axs[1, 2].axis('off')
 
 plt.tight_layout()
 plt.show()
 
+
+### Exercitiul 2
+
+# X = misc.face(gray=True)
+# plt.imshow(X, cmap=plt.cm.gray)
+# plt.show()
+
+def compress_image(image, snr_threshold):
+    # Aplicăm transformata Fourier bidimensională
+    image_fft = fftpack.fft2(image)
+
+    # Calculăm spectrul imaginii (magnitudinea coeficienților Fourier)
+    magnitude_spectrum = np.abs(image_fft)
+
+    # Calculăm SNR pentru fiecare frecvență
+    snr = magnitude_spectrum / np.std(magnitude_spectrum)
+
+    # Atenuăm coeficienții de frecvențe înalte bazat pe pragul SNR
+    compressed_spectrum = np.where(snr > snr_threshold, magnitude_spectrum, 0)
+
+    # Reconstruim imaginea prin aplicarea inversei transformatei Fourier bidimensionale
+    compressed_image = fftpack.ifft2(compressed_spectrum).real
+
+    return compressed_image
+
+# Încărcați imaginea
+X = misc.face(gray=True)
+
+# Specificați pragul SNR pentru atenuarea frecvențelor înalte
+snr_threshold = 20.0
+
+# Comprimăm imaginea
+compressed_X = compress_image(X, snr_threshold)
+
+# Afișăm imaginea originală și comprimată în două subgrafice
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+# Subgrafic pentru imaginea originală
+axs[0].imshow(X, cmap=plt.cm.gray)
+axs[0].set_title('Imaginea originală')
+
+# Subgrafic pentru imaginea comprimată
+axs[1].imshow(compressed_X, cmap=plt.cm.gray)
+axs[1].set_title(f'Imaginea comprimată (SNR Threshold = {snr_threshold})')
+
+plt.show()
 
 
