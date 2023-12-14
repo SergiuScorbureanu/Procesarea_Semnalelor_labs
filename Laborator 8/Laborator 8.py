@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
 from statsmodels.tsa.ar_model import AutoReg
 
 ### Exercitiul 1
@@ -74,12 +73,12 @@ model_ar = AutoReg(seria_de_timp, lags=p)
 model_ar_fit = model_ar.fit()
 
 # Obtinerea predictiilor
-predictions = model_ar_fit.predict(start=p, end=N - 1, dynamic=False)
+predictii = model_ar_fit.predict(start=p, end=N - 1, dynamic=False)
 
 # Desenam seria de timp originala si predicțiile
 plt.figure(figsize=(14, 6))
 plt.plot(seria_de_timp, label='Serie de Timp Originala', color='blue')
-plt.plot(range(p, N), predictions, label='Predicții AR', color='red', linestyle='dashed')
+plt.plot(range(p, N), predictii, label='Predicții AR', color='red', linestyle='dashed')
 plt.title('Serie de Timp si Predictiile Modelului AR')
 plt.legend()
 plt.show()
