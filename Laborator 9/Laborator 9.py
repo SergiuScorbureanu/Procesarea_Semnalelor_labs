@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Exercitiile 1 si 2
 # Definirea seriei de timp
 N = 1000
 t = np.arange(N)
@@ -28,6 +29,31 @@ plt.figure(figsize=(12, 6))
 plt.plot(t, seria_de_timp, label='Seria de timp originala', color='blue')
 plt.plot(t, noua_serie, label=f'Seria mediata cu alpha={alpha_manual}', color='red')
 plt.title('Compararea seriilor de timp')
+plt.xlabel('Timp')
+plt.ylabel('Valoare')
+plt.legend()
+plt.show()
+
+# Exercitiul 3
+# orizontul modelului MA
+q = 5
+
+# Generarea termenilor de eroare
+eroare = np.random.normal(0, 2, N)
+
+# Calcularea seriei de timp bazata pe modelul MA
+seria_ma = np.zeros_like(seria_de_timp, dtype=float)
+for i in range(q, N):
+    seria_ma[i] = np.dot(eroare[i-q:i], np.arange(1, q+1)[::-1])
+
+# Adaugarea seriei MA la seria originala pentru a obtine o noua serie
+seria_cu_ma = seria_de_timp + seria_ma
+
+# Afisarea graficelor
+plt.figure(figsize=(12, 6))
+plt.plot(t, seria_de_timp, label='Seria de timp originala', color='blue')
+plt.plot(t, seria_cu_ma, label=f'Seria cu model MA (q={q})', color='red')
+plt.title('Compararea seriilor de timp cu model MA')
 plt.xlabel('Timp')
 plt.ylabel('Valoare')
 plt.legend()
